@@ -50,7 +50,8 @@ ansible-playbook -i inventory.yml playbook.yml
 
 ### GitHub Actions
 
-Crie uma Service Account e adione nas Secrets do GitHub com o nome ```GCP_SA_KEY```
+Crie uma Service Account e adione nas Secrets do GitHub com o nome ```GCP_SA_KEY```. Também configure uma variavel para ID do Projetom chamada ```GCP_PROJECT```
+
 Por ser um laborátório e não um ambiente produtivo, vamos utilizar o **Github Cache**
 
 ```yml
