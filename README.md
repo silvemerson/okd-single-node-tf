@@ -44,7 +44,7 @@ terraform apply -auto-approve
 
 ```bash
 
-ansible-playbook -i inventory.yml playbook.yml
+ansible-playbook -i inventory.yml playbook.yml --ssh-extra-args "-o StrictHostKeyChecking=no"
 
 ```
 
