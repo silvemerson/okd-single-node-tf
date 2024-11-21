@@ -1,6 +1,7 @@
 provider "google" {
   project = var.project_id
   region  = var.region
+  credentials = file("/tmp/gcp-credentials.json")
 }
 
 resource "google_compute_instance" "okd_single_node" {
