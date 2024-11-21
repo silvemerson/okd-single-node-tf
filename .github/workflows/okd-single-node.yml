@@ -40,17 +40,17 @@ jobs:
 
       - name: Terraform Init
         env:
-          GCP_PROJECT: ${{ secrets.GCP_PROJECT }}      
+          TF_VAR_project_id: ${{ secrets.GCP_PROJECT }}      
         run: terraform init
 
       - name: Terraform Plan
         env:
-          GCP_PROJECT: ${{ secrets.GCP_PROJECT }}      
+          TF_VAR_project_id: ${{ secrets.GCP_PROJECT }}      
         run: terraform plan -out=tfplan
 
       - name: Terraform Apply or Destroy
         env:
-          GCP_PROJECT: ${{ secrets.GCP_PROJECT }}      
+          TF_VAR_project_id: ${{ secrets.GCP_PROJECT }}      
         run: |
           if [ "${{ github.event.inputs.action }}" == "create" ]; then
             terraform apply -auto-approve tfplan
