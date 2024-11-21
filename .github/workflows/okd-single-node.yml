@@ -1,4 +1,4 @@
-name: Terraform and Ansible Deployment
+name: OKD Single Node Deployment
 
 on:
   workflow_dispatch:
