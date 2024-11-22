@@ -19,7 +19,9 @@ resource "google_compute_instance" "okd_single_node" {
 
   network_interface {
     network = "default"
-    access_config {}
+    access_config {
+      nat_ip = google_compute_address.okd_static_ip.address
+    }
   }
 
   metadata = {
@@ -31,4 +33,9 @@ resource "google_compute_instance" "okd_single_node" {
   provisioner "local-exec" {
     command = "echo ${google_compute_instance.okd_single_node.network_interface[0].access_config[0].nat_ip} > instance_ip.txt"
   }
+}
+
+resource "google_compute_address" "okd_static_ip" {
+  name   = "okd-static-ip"
+  region = var.region
 }
