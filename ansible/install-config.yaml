@@ -1,0 +1,11 @@
+apiVersion: v1
+baseDomain: "{{ lookup('file', 'terraform/instance_ip.txt') }}".nip.io
+metadata:
+  name: okd-cluster
+platform:
+  gcp:
+    projectID: <ID-do-seu-projeto-GCP>
+    region: <região-do-seu-projeto>
+pullSecret: '<seu-pull-secret>'
+sshKey: |
+  <conteúdo-da-chave-SSH>

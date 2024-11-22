@@ -1,0 +1,77 @@
+---
+- name: Configure OKD Single Node
+  hosts: okd-single-node
+  become: true
+
+  tasks:
+    - name: Atualizar pacotes
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Instalar dependências
+      yum:
+        name:
+          - wget
+          - git
+          - tar
+          - bind-utils
+          - net-tools
+          - nfs-utils
+          - iptables-services
+        state: present
+
+    - name: Configurar hostname
+      hostname:
+        name: okd-single-node.local
+
+    - name: Adicionar entrada no /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1 okd-single-node.local"
+
+    - name: Baixar e instalar o OpenShift CLI e Installer
+      block:
+        - name: Download OpenShift CLI
+          get_url:
+            url: "https://github.com/okd-project/okd/releases/download/4.15.0-0.okd-2024-03-10-010116/openshift-client-linux-4.15.0-0.okd-2024-03-10-010116.tar.gz"
+            dest: /tmp/openshift-client.tar.gz
+
+        - name: Download OpenShift Installer
+          get_url:
+            url: "https://github.com/okd-project/okd/releases/download/4.15.0-0.okd-2024-03-10-010116/openshift-install-linux-4.15.0-0.okd-2024-03-10-010116.tar.gz"
+            dest: /tmp/openshift-install.tar.gz
+
+        - name: Extrair o OpenShift CLI
+          unarchive:
+            src: /tmp/openshift-client.tar.gz
+            dest: /usr/local/bin/
+            remote_src: yes
+
+        - name: Extrair o OpenShift Installer
+          unarchive:
+            src: /tmp/openshift-install.tar.gz
+            dest: /usr/local/bin/
+            remote_src: yes
+
+        - name: Garantir permissões de execução no openshift-install
+          file:
+            path: /usr/local/bin/openshift-install
+            mode: '0755'
+
+    - name: Criar diretório de instalação
+      file:
+        path: /root/okd-install
+        state: directory
+
+    - name: Gerar configuração de instalação
+      shell: |
+        /usr/local/bin/openshift-install create install-config --dir=/root/okd-install
+      args:
+        creates: /root/okd-install/install-config.yaml
+
+    - name: Instalar o cluster
+      shell: |
+        /usr/local/bin/openshift-install create cluster --dir=/root/okd-install
+      args:
+        chdir: /root/okd-install
